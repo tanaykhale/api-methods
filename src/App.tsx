@@ -1,35 +1,38 @@
 import { useState, useEffect } from "react";
 
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 
+import Lists from "./components/list";
+import Content from "./components/bodyContent";
 function App() {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
+  const [data, setData] = useState([]);
+  const fetchdata = async () => {
     fetch("https://jsonplaceholder.typicode.com/posts")
       .then((response) => response.json())
-      .then((data: Post[]) => setPosts(data))
-      .catch((error) => console.error("Error fetching posts:", error));
+      .then((data) => setData(data));
+  };
+  useEffect(() => {
+    fetchdata();
   }, []);
-
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<Lists data={data}></Lists>}></Route>
+        <Route path="/bodyContent" element={<Content data={data} />} />
+      </>
+    )
+  );
   return (
-    <div>
-      <h1>Posts from JSONPlaceholder</h1>
+    <>
       <div>
-        {posts.map((post) => (
-          <ul key={post.id}>
-            <li>{post.title}</li>
-            <li>{post.body}</li>
-            <hr />
-          </ul>
-        ))}
+        <RouterProvider router={router}></RouterProvider>
       </div>
-    </div>
+    </>
   );
 }
 
