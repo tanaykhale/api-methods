@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import List from "./components/list";
+import Body from "./components/bodyContent";
 
 import {
   Route,
@@ -7,33 +8,20 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 
-import Lists from "./components/list";
-import Content from "./components/bodyContent";
-function App() {
-  const [data, setData] = useState([]);
-  const fetchdata = async () => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => response.json())
-      .then((data) => setData(data));
-  };
-  useEffect(() => {
-    fetchdata();
-  }, []);
+const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/" element={<Lists data={data}></Lists>}></Route>
-        <Route path="/bodyContent" element={<Content data={data} />} />
+        <Route path="/" element={<List />} />
+        <Route path="/bodyContent/:bodyId" element={<Body />} />
       </>
     )
   );
   return (
     <>
-      <div>
-        <RouterProvider router={router}></RouterProvider>
-      </div>
+      <RouterProvider router={router} />
     </>
   );
-}
+};
 
 export default App;
